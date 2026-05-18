@@ -23,10 +23,18 @@ npx serve .
 
 ## 파일 구조
 
-- `index.html` — 마크업 + 스타일
+- `index.html` — 마크업 + 스타일 + PWA 메타
 - `app.js` — 데이터 + D3 렌더링 + 인터랙션
 - `geo.json` — APAC 국가 폴리곤 (간소화된 GeoJSON)
+- `manifest.json` — PWA 매니페스트
+- `icon.svg` / `icons/*.png` — 앱 아이콘 (홈 화면 추가용)
+- `scripts/generate-icons.mjs` — SVG → PNG 변환 (수정 시 `npm i sharp` 후 실행)
+
+## PWA로 설치
+
+iOS Safari: 공유 → "홈 화면에 추가"
+Android Chrome: 메뉴 → "홈 화면에 추가" 또는 자동 프롬프트
 
 ## 배포
 
-Vercel에 정적 사이트로 배포. 빌드 스텝 없음.
+Vercel에 정적 사이트로 배포. 빌드 스텝 없음. `main` 브랜치 푸시 시 자동 재배포.
