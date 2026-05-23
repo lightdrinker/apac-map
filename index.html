@@ -228,11 +228,140 @@
   }
   .city-chip.cap::before { content: '★ '; font-size: 10px; }
 
-  #footer { text-align: center; padding: 0 0 24px; font-size: 10px; color: var(--text-faint); }
+  #disclaimer { text-align: center; padding: 0 0 24px; font-size: 10px; color: var(--text-faint); }
 
   #loading {
     padding: 40px 16px; text-align: center; color: var(--text-dim); font-size: 13px;
   }
+
+  /* ── Fixed App Footer ── */
+  body { padding-bottom: calc(40px + env(safe-area-inset-bottom)); }
+  .app-footer {
+    position: fixed; left: 0; right: 0; bottom: 0;
+    display: flex; align-items: center; justify-content: center; flex-wrap: wrap;
+    gap: 6px;
+    padding: 8px 12px calc(8px + env(safe-area-inset-bottom));
+    background: rgba(6,15,30,0.92);
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    border-top: 1px solid rgba(255,255,255,0.08);
+    font-size: 11px; color: var(--text-dim);
+    z-index: 99;
+  }
+  .footer-name { color: #2563eb; font-weight: 700; }
+  .footer-sep { color: rgba(255,255,255,0.18); }
+  .footer-email {
+    color: var(--text-dim); text-decoration: none;
+    display: inline-flex; align-items: center; gap: 3px;
+    transition: color 0.15s;
+  }
+  .footer-email:hover { color: #60a5fa; }
+  .footer-bug-btn {
+    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.04);
+    color: var(--text-dim);
+    border-radius: 20px;
+    padding: 3px 10px;
+    font-size: 10px; font-family: inherit;
+    cursor: pointer; transition: all 0.15s;
+  }
+  .footer-bug-btn:hover {
+    border-color: rgba(248,113,113,0.45);
+    color: #f87171;
+    background: rgba(248,113,113,0.08);
+  }
+
+  /* ── Bug Report Modal ── */
+  #bug-backdrop {
+    position: fixed; inset: 0;
+    background: rgba(15,23,42,0.55);
+    backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.25s;
+    z-index: 200;
+    display: flex; align-items: center; justify-content: center;
+    padding: 20px;
+  }
+  #bug-backdrop.show { opacity: 1; pointer-events: auto; }
+  #bug-modal {
+    width: 100%; max-width: 440px;
+    background: linear-gradient(180deg, #0d1828, #04080f);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 22px 22px calc(22px + env(safe-area-inset-bottom));
+    transform: scale(0.95);
+    transition: transform 0.25s cubic-bezier(.34,1.2,.64,1);
+    max-height: 90vh; overflow-y: auto;
+  }
+  #bug-backdrop.show #bug-modal { transform: scale(1); }
+  .bug-modal-head {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 16px;
+  }
+  .bug-modal-title { font-size: 16px; font-weight: 800; color: var(--text); }
+  .bug-modal-close {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: rgba(255,255,255,0.06); border: none;
+    color: var(--text-dim); font-size: 14px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-family: inherit;
+  }
+  .bug-field { margin-bottom: 12px; }
+  .bug-label {
+    display: block; font-size: 10px; letter-spacing: 1.5px;
+    color: var(--text-dim); margin-bottom: 6px;
+    text-transform: uppercase;
+  }
+  .bug-req { color: #f87171; }
+  .bug-input, .bug-textarea {
+    width: 100%;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px;
+    padding: 10px 12px;
+    color: var(--text);
+    font-family: inherit; font-size: 13px;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .bug-textarea { resize: vertical; min-height: 110px; }
+  .bug-input:focus, .bug-textarea:focus {
+    outline: none;
+    border-color: #60a5fa;
+    background: rgba(96,165,250,0.06);
+  }
+  .bug-actions { display: flex; gap: 8px; margin-top: 16px; }
+  .bug-btn {
+    flex: 1; padding: 10px 14px;
+    border-radius: 10px; border: none;
+    font-family: inherit; font-size: 13px; font-weight: 600;
+    cursor: pointer; transition: all 0.15s;
+  }
+  .bug-btn-primary {
+    background: linear-gradient(135deg, #60a5fa, #34d399);
+    color: #04080f;
+  }
+  .bug-btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
+  .bug-btn-secondary {
+    background: rgba(255,255,255,0.06);
+    color: var(--text-dim);
+  }
+  .bug-btn-secondary:hover { background: rgba(255,255,255,0.1); color: var(--text); }
+  .bug-error {
+    margin-top: 10px; padding: 8px 10px; border-radius: 8px;
+    background: rgba(248,113,113,0.1);
+    border: 1px solid rgba(248,113,113,0.25);
+    color: #f87171; font-size: 12px;
+  }
+  .bug-success { text-align: center; padding: 24px 6px 10px; }
+  .bug-success-icon {
+    width: 60px; height: 60px; margin: 0 auto 14px;
+    border-radius: 50%;
+    background: rgba(52,211,153,0.15);
+    border: 2px solid rgba(52,211,153,0.45);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px; color: #34d399;
+  }
+  .bug-success-text { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+  .bug-success-sub { font-size: 12px; color: var(--text-dim); }
 </style>
 </head>
 <body>
@@ -265,7 +394,57 @@
   <div class="leg-grid" id="leg-grid"></div>
 </div>
 
-<div id="footer">* 기관 기준에 따라 포함 국가는 다를 수 있음</div>
+<div id="disclaimer">* 기관 기준에 따라 포함 국가는 다를 수 있음</div>
+
+<footer class="app-footer">
+  <span class="footer-copy">© 2026 <strong class="footer-name">Jun</strong></span>
+  <span class="footer-sep">·</span>
+  <a class="footer-email" href="mailto:lightdrinker@naver.com">
+    <span class="footer-email-icon">✉</span>
+    lightdrinker@naver.com
+  </a>
+  <span class="footer-sep">·</span>
+  <button class="footer-bug-btn" id="bug-open-btn" type="button">버그 리포트</button>
+</footer>
+
+<!-- Bug Report Modal -->
+<div id="bug-backdrop">
+  <div id="bug-modal" role="dialog" aria-labelledby="bug-modal-title">
+    <div id="bug-form-view">
+      <div class="bug-modal-head">
+        <div class="bug-modal-title" id="bug-modal-title">버그 리포트</div>
+        <button class="bug-modal-close" id="bug-close-btn" type="button" aria-label="닫기">✕</button>
+      </div>
+      <form id="bug-form" novalidate>
+        <div class="bug-field">
+          <label class="bug-label" for="bug-title-input">제목 <span class="bug-req">*</span></label>
+          <input class="bug-input" type="text" id="bug-title-input" name="bug_title" maxlength="100" required placeholder="간단한 한 줄 요약">
+        </div>
+        <div class="bug-field">
+          <label class="bug-label" for="bug-body-input">내용 <span class="bug-req">*</span></label>
+          <textarea class="bug-textarea" id="bug-body-input" name="bug_body" rows="6" required placeholder="언제 / 어떤 화면 / 무엇이 잘못되었는지"></textarea>
+        </div>
+        <div class="bug-field">
+          <label class="bug-label" for="bug-contact-input">연락처 (선택)</label>
+          <input class="bug-input" type="text" id="bug-contact-input" name="reporter_contact" placeholder="이메일 또는 카톡 ID — 답신 받을 곳">
+        </div>
+        <div id="bug-error" class="bug-error" style="display:none"></div>
+        <div class="bug-actions">
+          <button type="button" class="bug-btn bug-btn-secondary" id="bug-cancel-btn">취소</button>
+          <button type="submit" class="bug-btn bug-btn-primary" id="bug-submit-btn">전송</button>
+        </div>
+      </form>
+    </div>
+    <div id="bug-success-view" style="display:none">
+      <div class="bug-success">
+        <div class="bug-success-icon">✓</div>
+        <div class="bug-success-text">전송 완료</div>
+        <div class="bug-success-sub">리포트 감사합니다. 빠른 시일 내 확인할게요.</div>
+        <button type="button" class="bug-btn bug-btn-secondary" style="margin-top:18px;width:100%" id="bug-done-btn">닫기</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <div id="backdrop"></div>
 <div id="sheet">
@@ -299,6 +478,7 @@
   <div class="city-list" id="s-cities"></div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

@@ -361,3 +361,99 @@ fetch("./geo.json")
   .catch(err => {
     document.getElementById("loading").textContent = "지도 데이터 로드 실패: " + err.message;
   });
+
+// ── Bug Report ──────────────────────────────────────────
+// EmailJS public key는 클라이언트 노출이 정상 동작 방식.
+// 여러 앱에서 공유 가능 — 이메일 본문의 app_name으로 구분됨.
+const EMAILJS_CONFIG = {
+  serviceId: "service_zwhv4b2",
+  templateId: "template_ap93ysu",
+  publicKey: "1xKAs_MoyVjGr1t_2",
+  appName: "APAC Map"
+};
+
+if (typeof emailjs !== "undefined") {
+  emailjs.init({ publicKey: EMAILJS_CONFIG.publicKey });
+}
+
+const bugBackdrop = document.getElementById("bug-backdrop");
+const bugForm = document.getElementById("bug-form");
+const bugFormView = document.getElementById("bug-form-view");
+const bugSuccessView = document.getElementById("bug-success-view");
+const bugSubmitBtn = document.getElementById("bug-submit-btn");
+const bugError = document.getElementById("bug-error");
+let bugSending = false;
+
+function openBugModal() {
+  bugForm.reset();
+  bugFormView.style.display = "";
+  bugSuccessView.style.display = "none";
+  bugError.style.display = "none";
+  bugSubmitBtn.disabled = false;
+  bugSubmitBtn.textContent = "전송";
+  bugSending = false;
+  bugBackdrop.classList.add("show");
+  setTimeout(() => document.getElementById("bug-title-input").focus(), 200);
+}
+
+function closeBugModal() {
+  if (bugSending) return;
+  bugBackdrop.classList.remove("show");
+}
+
+document.getElementById("bug-open-btn").onclick = openBugModal;
+document.getElementById("bug-close-btn").onclick = closeBugModal;
+document.getElementById("bug-cancel-btn").onclick = closeBugModal;
+document.getElementById("bug-done-btn").onclick = closeBugModal;
+
+bugBackdrop.addEventListener("click", (e) => {
+  if (e.target === bugBackdrop) closeBugModal();
+});
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && bugBackdrop.classList.contains("show")) closeBugModal();
+});
+
+bugForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  if (bugSending) return;
+
+  const title = document.getElementById("bug-title-input").value.trim();
+  const body = document.getElementById("bug-body-input").value.trim();
+  const contact = document.getElementById("bug-contact-input").value.trim();
+
+  if (!title || !body) {
+    bugError.textContent = "제목과 내용은 필수 항목입니다.";
+    bugError.style.display = "";
+    return;
+  }
+
+  if (typeof emailjs === "undefined") {
+    bugError.textContent = "EmailJS 로드 실패. 잠시 후 다시 시도해주세요.";
+    bugError.style.display = "";
+    return;
+  }
+
+  bugSending = true;
+  bugSubmitBtn.disabled = true;
+  bugSubmitBtn.textContent = "전송 중...";
+  bugError.style.display = "none";
+
+  try {
+    await emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, {
+      app_name: EMAILJS_CONFIG.appName,
+      bug_title: title,
+      bug_body: body,
+      reporter_contact: contact || "(미입력)"
+    });
+    bugFormView.style.display = "none";
+    bugSuccessView.style.display = "";
+  } catch (err) {
+    bugError.textContent = "전송 실패: " + (err && (err.text || err.message) || "알 수 없는 오류");
+    bugError.style.display = "";
+  } finally {
+    bugSending = false;
+    bugSubmitBtn.disabled = false;
+    bugSubmitBtn.textContent = "전송";
+  }
+});
